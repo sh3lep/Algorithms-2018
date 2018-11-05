@@ -123,6 +123,7 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
+
     static public void sortTemperatures(String inputName, String outputName) {
         ArrayList<Double> list = new ArrayList<>();
 
