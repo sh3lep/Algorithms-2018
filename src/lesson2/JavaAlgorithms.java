@@ -3,6 +3,10 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -82,8 +86,18 @@ public class JavaAlgorithms {
      * Х х Х
      */
     static public int josephTask(int menNumber, int choiceInterval) {
-        throw new NotImplementedError();
+        if (menNumber < 1 || choiceInterval < 1) {
+            throw new IllegalArgumentException();
+        }
+
+        int result = 0;
+        for (int i = 0; i < menNumber; i++) {
+            result = (result + choiceInterval) % (i + 1);
+        }
+        return result + 1;
     }
+    // Трудоемкость T = O(n)
+    // Ресурсоемкость R = O(n)
 
     /**
      * Наибольшая общая подстрока.
@@ -96,9 +110,38 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+    static public String longestCommonSubstring(String first, String second) {
+        if (first == null || second == null || first.length() == 0 || second.length() == 0) {
+            return "";
+        }
+
+        if (first.equals(second)) {
+            return first;
+        }
+
+        int[][] matrix = new int[first.length()][second.length()];
+        int longest = 0;
+        int max = 0;
+
+        for (int i = 0; i < first.length(); i++) {
+            for (int j = 0; j < second.length(); j++) {
+                if (first.charAt(i) == second.charAt(j)) {
+                    if (i != 0 && j != 0) {
+                        matrix[i][j] = matrix[i - 1][j - 1] + 1;
+                    } else {
+                        matrix[i][j] = 1;
+                    }
+                    if (matrix[i][j] > longest) {
+                        longest = matrix[i][j];
+                        max = i;
+                    }
+                }
+            }
+        }
+        return first.substring(max - longest + 1, max + 1);
     }
+    // Трудоемкость: T = O(m * n)
+    // Ресурсоемкость: R = O(n)
 
     /**
      * Число простых чисел в интервале
@@ -111,7 +154,25 @@ public class JavaAlgorithms {
      * Единица простым числом не считается.
      */
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        if (limit <= 1) {
+            return 0;
+        }
+
+        int result = 0;
+        boolean [] isComposite = new boolean [limit + 1];
+        isComposite[1] = true;
+
+        for (int i = 2; i <= limit; i++) {
+            if (!isComposite[i]) {
+                result++;
+                int multiple = 2;
+                while (i * multiple <= limit) {
+                    isComposite [i * multiple] = true;
+                    multiple++;
+                }
+            }
+        }
+        return result;
     }
 
     /**
