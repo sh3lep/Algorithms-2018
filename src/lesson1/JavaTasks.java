@@ -194,7 +194,10 @@ public class JavaTasks {
                 if (currentNum > 0) {
                     list.add(currentNum);
                 } else throw new NumberFormatException();
-                Integer currentFrequency = map.getOrDefault(currentNum, 0) + 1;
+                if (!map.containsKey(currentNum)) {
+                    map.put(currentNum, 0);
+                }
+                Integer currentFrequency = map.get(currentNum) + 1;
                 if (currentFrequency > frequency || (frequency == currentFrequency && currentNum < repeatingNumber)) {
                     frequency = currentFrequency;
                     repeatingNumber = currentNum;
