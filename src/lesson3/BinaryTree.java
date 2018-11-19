@@ -256,7 +256,6 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         }
     }
 
-
     private void newSet(SortedSet<T> sortedSet, Node<T> node) {
         sortedSet.add(node.value);
 
@@ -277,25 +276,8 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        SortedSet<T> sortedSet = new TreeSet<>();
-        newTailSet(fromElement, sortedSet, root);
-        return sortedSet;
-    }
-
-    private void newTailSet(T fromElement, SortedSet<T> sortedSet, Node<T> node) {
-        int comparison = node.value.compareTo(fromElement);
-
-        if (comparison >= 0) {
-            sortedSet.add(node.value);
-            if (node.right != null) {
-                newSet(sortedSet, node.right);
-            }
-            if (node.left != null) {
-                newTailSet(fromElement, sortedSet, node.left);
-            }
-        } else if (node.right != null) {
-            newTailSet(fromElement, sortedSet, node.right);
-        }
+        // TODO
+        throw new NotImplementedError();
     }
 
     @Override
