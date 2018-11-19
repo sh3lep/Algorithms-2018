@@ -34,6 +34,50 @@ class BinaryTreeTest {
     }
 
     @Test
+    fun TestA() {
+        val tree = BinaryTree<Int>()
+        tree.add(9)
+        tree.add(4)
+        tree.add(6)
+        tree.add(1)
+        tree.add(12)
+        tree.add(10)
+        tree.add(8)
+        assertTrue(tree.remove(6))
+        assertTrue(tree.remove(1))
+        assertEquals(5, tree.size)
+    }
+
+    @Test
+    fun TestB() {
+        val tree = BinaryTree<Int>()
+        tree.add(9)
+        tree.add(4)
+        tree.add(6)
+        tree.add(1)
+        tree.add(12)
+        tree.add(10)
+        tree.add(8)
+        assertTrue(tree.remove(8))
+        assertTrue(tree.remove(10))
+        assertEquals(5, tree.size)
+    }
+
+    @Test
+    fun TestC() {
+        val tree = BinaryTree<Int>()
+        tree.add(9)
+        tree.add(4)
+        tree.add(6)
+        tree.add(1)
+        tree.add(12)
+        tree.add(10)
+        tree.add(8)
+        assertTrue(tree.remove(4))
+        assertEquals(6, tree.size)
+    }
+
+    @Test
     @Tag("Example")
     fun testAddKotlin() {
         testAdd { createKotlinTree() }

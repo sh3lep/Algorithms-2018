@@ -11,7 +11,7 @@ import java.util.*;
 public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implements CheckableSortedSet<T> {
 
     private static class Node<T> {
-        final T value;
+        T value;
 
         Node<T> left = null;
 
@@ -36,12 +36,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         Node<T> newNode = new Node<>(t);
         if (closest == null) {
             root = newNode;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             assert closest.left == null;
             closest.left = newNode;
-        }
-        else {
+        } else {
             assert closest.right == null;
             closest.right = newNode;
         }
@@ -64,10 +62,51 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      * Удаление элемента в дереве
      * Средняя
      */
+    // Трудоемкость - O(h)
+    // Ресурсоемкость - O(h)
+    // h - высота бинарного дерева
+    // Задание выполнено на основе алгоритма, представленного по ссылке ниже:
+    // https://neerc.ifmo.ru/wiki/index.php?title=Дерево_поиска,_наивная_реализация
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        T t = (T) o;
+        Node<T> result = delete(root, t);
+        size--;
+        return (result != null);
+    }
+
+    private Node<T> delete(Node<T> root, T t) {
+        int comparison = t.compareTo(root.value);
+
+        if (comparison < 0) {
+            root.left = delete(root.left, t);
+        } else if (comparison > 0) {
+            root.right = delete(root.right, t);
+        } else if (root.right != null) {
+            root.value = minimum(root.right).value;
+            root.right = delete(root.right, root.value);
+        } else if (root.left != null) {
+            root.value = maximum(root.left).value;
+            root.left = delete(root.left, root.value);
+        } else {
+            root = null;
+        }
+
+        return root;
+    }
+
+    private Node<T> minimum(Node<T> t) {
+        if (t.left == null) {
+            return t;
+        }
+        return minimum(t.left);
+    }
+
+    private Node<T> maximum(Node<T> t) {
+        if (t.right == null) {
+            return t;
+        }
+        return maximum(t.right);
     }
 
     @Override
@@ -87,41 +126,56 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         int comparison = value.compareTo(start.value);
         if (comparison == 0) {
             return start;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             if (start.left == null) return start;
             return find(start.left, value);
-        }
-        else {
+        } else {
             if (start.right == null) return start;
             return find(start.right, value);
         }
     }
 
     public class BinaryTreeIterator implements Iterator<T> {
+        private Node<T> current;
+        private LinkedList<Node<T>> list;
 
-        private Node<T> current = null;
-
-        private BinaryTreeIterator() {}
+        private BinaryTreeIterator() {
+            list = new LinkedList<>();
+            current = root;
+            while (current != null) {
+                list.addFirst(current);
+                current = current.left;
+            }
+        }
 
         /**
          * Поиск следующего элемента
          * Средняя
          */
+        //Трудоёмкость Т = O(N)
+        //Ресурсоёмкость R = O(1)
         private Node<T> findNext() {
-            // TODO
-            throw new NotImplementedError();
+            return list.pop();
         }
 
         @Override
         public boolean hasNext() {
-            return findNext() != null;
+            return !list.isEmpty();
         }
 
         @Override
         public T next() {
+            Node<T> node;
             current = findNext();
+            node = current;
             if (current == null) throw new NoSuchElementException();
+            if (node.right != null) {
+                node = node.right;
+                while (node != null) {
+                    list.addFirst(node);
+                    node = node.left;
+                }
+            }
             return current.value;
         }
 
@@ -129,10 +183,13 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          * Удаление следующего элемента
          * Сложная
          */
+        // Трудоемкость - O(h)
+        // Ресурсоемкость - O(h)
+        // h - высота бинарного дерева
         @Override
         public void remove() {
-            // TODO
-            throw new NotImplementedError();
+            root = delete(root, current.value);
+            size--;
         }
     }
 
@@ -169,22 +226,75 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      * Найти множество всех элементов меньше заданного
      * Сложная
      */
+    // Трудоемкость T = O(n)
+    // Ресурсоемкость R = O(n)
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        SortedSet<T> sortedSet = new TreeSet<>();
+        newHeadSet(toElement, sortedSet, root);
+        return sortedSet;
+    }
+
+    private void newHeadSet(T toElement, SortedSet<T> sortedSet, Node<T> node) {
+        int comparison = node.value.compareTo(toElement);
+
+        if (comparison < 0) {
+            sortedSet.add(node.value);
+            if (node.left != null) {
+                newSet(sortedSet, node.left);
+            }
+            if (node.right != null) {
+                newHeadSet(toElement, sortedSet, node.right);
+            }
+        } else if (node.left != null) {
+            if (comparison == 0) {
+                newSet(sortedSet, node.left);
+            } else {
+                newHeadSet(toElement, sortedSet, node.left);
+            }
+        }
+    }
+
+    private void newSet(SortedSet<T> sortedSet, Node<T> node) {
+        sortedSet.add(node.value);
+
+        if (node.left != null) {
+            newSet(sortedSet, node.left);
+        }
+        if (node.right != null) {
+            newSet(sortedSet, node.right);
+        }
     }
 
     /**
      * Найти множество всех элементов больше или равных заданного
      * Сложная
      */
+    // Трудоемкость T = O(n)
+    // Ресурсоемкость R = O(n)
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        // TODO
-        throw new NotImplementedError();
+        SortedSet<T> sortedSet = new TreeSet<>();
+        newTailSet(fromElement, sortedSet, root);
+        return sortedSet;
+    }
+
+    private void newTailSet(T fromElement, SortedSet<T> sortedSet, Node<T> node) {
+        int comparison = node.value.compareTo(fromElement);
+
+        if (comparison >= 0) {
+            sortedSet.add(node.value);
+            if (node.right != null) {
+                newSet(sortedSet, node.right);
+            }
+            if (node.left != null) {
+                newTailSet(fromElement, sortedSet, node.left);
+            }
+        } else if (node.right != null) {
+            newTailSet(fromElement, sortedSet, node.right);
+        }
     }
 
     @Override
