@@ -168,7 +168,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
             Node<T> node;
             current = findNext();
             node = current;
-            if (current == null) throw new NoSuchElementException();
+            if (current == null) throw new IllegalArgumentException();
             if (node.right != null) {
                 node = node.right;
                 while (node != null) {
