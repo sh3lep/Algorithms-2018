@@ -256,6 +256,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         }
     }
 
+
     private void newSet(SortedSet<T> sortedSet, Node<T> node) {
         sortedSet.add(node.value);
 
